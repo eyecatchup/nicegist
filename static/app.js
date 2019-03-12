@@ -211,7 +211,6 @@ var loadGist = function(gistId) {
                             } else {
                                 var root = document.documentElement || document.body;
                                 jankyScrollTo(root, elem.offsetTop, 600);
-                                jankyScrollTo()
                             }
                         }, 200);
                     }
