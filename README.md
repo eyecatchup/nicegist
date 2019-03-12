@@ -49,6 +49,7 @@ javascript:(function(){if(location.hostname==="gist.github.com"){var gistId=loca
 - [markdown-it](https://github.com/markdown-it/markdown-it) for Markdown parsing
 - [highlight.js](https://highlightjs.org/) for code block syntax highlighting
 - Some regex sugar and a hidden gist feature for gist embedding
+- [GitHub Pages SPA hack](http://www.backalleycoder.com/2016/05/13/sghpa-the-single-page-app-hack-for-github-pages/) for pretty URLs
 
 ## License
 
