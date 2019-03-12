@@ -63,9 +63,9 @@
 })(window);
 
 var externalLinks = function() {
-    for(var c = document.getElementsByTagName("a"), a = 0;a < c.length;a++) {
+    for(var c = document.getElementsByTagName("a"), a = 0; a < c.length; a++) {
         var b = c[a];
-        b.getAttribute("href") && b.hostname !== location.hostname && (b.target = "_blank")
+        b.getAttribute("href") && b.hostname !== location.hostname && (b.target = "_blank");
     }
 };
 
@@ -98,7 +98,6 @@ var getIframeHeight = function(filename) {
         if (files.others[n].filename === filename) {
             var matches = files.others[n].content.match(/\n/g);
             var lines = ((matches && matches.length) ? matches.length : 0) + 1;
-
             // 22px = line height in embedded gists (with .pibb extension)
             // 40px = embedded gists footer height
             // 3px = cumulated border height for embedded gists
@@ -131,7 +130,7 @@ var jankyScrollTo = function(element, to, duration) {
 };
 
 var loadGist = function(gistId) {
-    ghapi.getGist(gistId, function(gist) {
+    GithubApi.getGist(gistId, function(gist) {
         if (gist) {
             console.dir(gist);
             hideLoadingIndicator();
@@ -226,14 +225,6 @@ var loadGist = function(gistId) {
     });
 };
 
-var ghapi = window.GithubApi,
-    $titleHolder = document.querySelector('#titleHolder'),
-    $contentHolder = document.querySelector('#gistContent'),
-    files = {
-        markdown: [],
-        others: []
-    };
-
 var init = function(gistId) {
     if (typeof gistId === 'undefined' || gistId === '') {
         loadGist('7442b083383908d7c925981ff082fea7');
@@ -244,18 +235,24 @@ var init = function(gistId) {
     }
 };
 
+var $titleHolder = document.querySelector('#titleHolder'),
+    $contentHolder = document.querySelector('#gistContent'),
+    gistId = '',
+    files = {
+        markdown: [],
+        others: []
+    };
+
 (function() {
     var redirect = sessionStorage.redirect;
     delete sessionStorage.redirect;
 
     if (redirect && redirect !== location.href) {
-        // redirected via 404 page hack
         history.replaceState(null, null, redirect);
-        var gistId = redirect.split('/').pop();
-        init(gistId);
+        gistId = redirect.split('/').pop(); // redirected via 404 page hack
     } else {
-        // direct entry
-        var gistId = parseQueryString['id'];
-        init(gistId);
+        gistId = parseQueryString['id']; // direct entry
     }
+
+    init(gistId);
 })();

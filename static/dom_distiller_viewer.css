@@ -400,3 +400,9 @@ h6:hover .header-anchor {
         width: 15px;
     }
 }
+
+/** RST styles **/
+
+pre.rst-literal-block span.rst-text {
+    display: block;
+}
