@@ -229,7 +229,7 @@ video::-webkit-media-controls-fullscreen-button {
     width: 100%;
 }
 
-article > #content, #comments, footer {
+article > #gistContent, #comments, footer {
     margin: 24px 16px 24px 16px;
 }
 

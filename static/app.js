@@ -90,10 +90,6 @@ var parseQueryString = (function(pairList) {
     return pairs;
 })(window.location.search.substr(1).split('&'));
 
-var slugify = function(str) {
-    return encodeURIComponent(String(str).trim().toLowerCase().replace(/\s+/g, '-'))
-};
-
 // Since we can not access the iframe to get its scroll height (cross origin),
 // we calculate the height by counting the lines in the embedded gist.
 // Ugly, but works reliable.
@@ -111,6 +107,27 @@ var getIframeHeight = function(filename) {
         }
     }
     return false;
+};
+
+// smooth anchor scrolling
+var smoothScrollTo = function(elem) {
+    window.scroll({
+        behavior: 'smooth',
+        left: 0,
+        top: elem.getBoundingClientRect().top + window.scrollY
+    });
+};
+// not-so-smooth anchor scrolling for IE
+var jankyScrollTo = function(element, to, duration) {
+    if (duration <= 0) return;
+    var difference = to - element.scrollTop;
+    var perTick = difference / duration * 10;
+
+    setTimeout(function() {
+        element.scrollTop = element.scrollTop + perTick;
+        if (element.scrollTop === to) return;
+        jankyScrollTo(element, to, duration - 10);
+    }, 10);
 };
 
 var loadGist = function(gistId) {
@@ -143,9 +160,7 @@ var loadGist = function(gistId) {
                     var md = window.markdownit({linkify: true});
                     md.use(window.markdownItAnchor, {
                         level: 1,
-                        // slugify: string => string,
                         permalink: true,
-                        // renderPermalink: (slug, opts, state, permalink) => {},
                         permalinkClass: 'header-anchor',
                         permalinkSymbol: '¶',
                         permalinkBefore: true
@@ -185,6 +200,21 @@ var loadGist = function(gistId) {
 
                     // open external links in new tab
                     externalLinks();
+
+                    // smooth-scroll to anchor
+                    if (location.hash.length) {
+                        setTimeout(function() {
+                            var elem = document.getElementById(location.hash.substring(1));
+                            var isIE = /Trident|MSIE/.test(navigator.userAgent);
+                            if (!isIE) {
+                                smoothScrollTo(elem);
+                            } else {
+                                var root = document.documentElement || document.body;
+                                jankyScrollTo(root, elem.offsetTop, 600);
+                                jankyScrollTo()
+                            }
+                        }, 200);
+                    }
                 } else {
                     $contentHolder.textContent = 'No markdown files attached to gist ' + gistId;
                 }
@@ -199,42 +229,34 @@ var loadGist = function(gistId) {
 
 var ghapi = window.GithubApi,
     $titleHolder = document.querySelector('#titleHolder'),
-    $contentHolder = document.querySelector('#content'),
+    $contentHolder = document.querySelector('#gistContent'),
     files = {
         markdown: [],
         others: []
     };
+
+var init = function(gistId) {
+    if (typeof gistId === 'undefined' || gistId === '') {
+        loadGist('7442b083383908d7c925981ff082fea7');
+        showFooter('footerIntro');
+    } else {
+        loadGist(gistId);
+        showFooter('footerPost');
+    }
+};
 
 (function() {
     var redirect = sessionStorage.redirect;
     delete sessionStorage.redirect;
 
     if (redirect && redirect !== location.href) {
-        // redirected from 404 page hack
+        // redirected via 404 page hack
         history.replaceState(null, null, redirect);
-        // REMOVE THIS - just showing the redirect route in the UI
-        document.body.setAttribute('message', 'This page was redirected by 404.html, from the route: ' + redirect);
-
         var gistId = redirect.split('/').pop();
-        console.log(gistId);
-
-        if (typeof gistId === 'undefined' || gistId === '') {
-            loadGist('7442b083383908d7c925981ff082fea7');
-            showFooter('intro');
-        } else {
-            loadGist(gistId);
-            showFooter('post');
-        }
+        init(gistId);
     } else {
         // direct entry
         var gistId = parseQueryString['id'];
-
-        if (typeof gistId === 'undefined' || gistId === '') {
-            loadGist('7442b083383908d7c925981ff082fea7');
-            showFooter('intro');
-        } else {
-            loadGist(gistId);
-            showFooter('post');
-        }
+        init(gistId);
     }
 })();
