@@ -134,7 +134,7 @@ var loadGist = function(gistId) {
                 // parse markdown files
                 if (files.markdown.length) {
                     var html = '';
-                    var md = window.markdownit();
+                    var md = window.markdownit({linkify: true});
 
                     for (var i in files.markdown) {
                         html += md.render(files.markdown[i].content);
