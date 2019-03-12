@@ -24,7 +24,7 @@ I liked the idea. Thus, _Nicegist_ was born.
 
 1. Create a gist on Github with one or more Markdown-syntax files.
 2. Note the gist ID. (It's usually a longish alpha-numeric string like `dab5cf7977008e504213`.)
-3. View your writing presented nicely at eyecatchup.github.io/nicegist/?id=GIST_ID
+3. View your writing presented nicely at `eyecatchup.github.io/nicegist/YOUR_GIST_ID`
 
 **Bookmarklet:**
 
