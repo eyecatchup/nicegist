@@ -229,7 +229,7 @@ video::-webkit-media-controls-fullscreen-button {
     width: 100%;
 }
 
-#content, #comments {
+#content, #comments, footer {
     margin: 24px 16px 24px 16px;
 }
 
@@ -268,9 +268,8 @@ cite {
 
 hr {
     opacity: .5;
-    border-style: solid;
-    height: 1px 0 0 0;
-    width: 75%;
+    border-style: 1px solid #aaa;
+    width: 100%;
 }
 
 q {
@@ -357,4 +356,18 @@ iframe.embedded-gist {
 
 img {
     max-width: 100%;
+}
+
+footer {
+    margin-top: 4em;
+    margin-bottom: 2em;
+    border-top: 1px solid #eee;
+}
+
+footer p {
+    margin-top: 1.143rem;
+    display: none;
+    font-size: 0.9em;
+    color: #888;
+    font-style: italic;
 }

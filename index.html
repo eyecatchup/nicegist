@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-    <meta name="theme-color" id="theme-color">
     <title>Nicegist</title>
 
     <link rel="stylesheet" href="./static/dom_distiller_viewer.css" media="nope" onload="this.media='all'">
@@ -17,22 +16,20 @@
         <div id="mainContent">
             <article>
                 <header id="articleHeader">
-                    <div id="titleCollapse">
-                        <div class="verticalCenterOuter">
-                            <div class="verticalCenterInner">
-                                <h1 id="titleHolder">Loading gist...</h1>
-                            </div>
-                        </div>
-                    </div>
+                    <h1 id="titleHolder">Loading gist...</h1>
                 </header>
                 <div id="content">
                     <noscript>Enable JavaScript to use nicegist.</noscript>
                 </div>
             </article>
-            <div id="loadingIndicator" class="visible">
+            <div id="loadingIndicator">
                 <img src="./static/dom_distiller_material_spinner.svg">
             </div>
             <div id="comments"></div>
+            <footer>
+                <p id="intro">Check out the <a href="https://github.com/eyecatchup/nicegist">source for Nicegist on GitHub</a></p>
+                <p id="post"><a href="/">Nicegist</a> · writing for hackers · zero setup · publish in seconds</p>
+            </footer>
         </div>
     </div>
     <script src='./static/app.js' defer async></script>

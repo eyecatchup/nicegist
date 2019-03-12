@@ -10,7 +10,7 @@ _* As long as GitHub exists, it will not die. Yay!_
 
 When I recognized that [gist.io](https://github.com/idan/gistio) is dead, I stumbled upon [a comment](https://github.com/idan/gistio/issues/74#issuecomment-348884248) in gist.io's issue tracker, that suggested to build a pure JavaScript implementation to be hosted on GitHub pages.
 
-I liked the idea. Thus, _nicegist_ was born.
+I liked the idea. Thus, _Nicegist_ was born.
 
 ## Usage
 
