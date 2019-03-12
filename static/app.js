@@ -77,14 +77,15 @@ var showFooter = function(elemId) {
     document.querySelector('#' + elemId).style.display = 'block';
 };
 
-var parseQueryString = (function (pairList) {
+var parseQueryString = (function(pairList) {
     var pairs = {};
     for (var i = 0; i < pairList.length; ++i) {
         var keyValue = pairList[i].split('=', 2);
-        if (keyValue.length == 1)
+        if (keyValue.length == 1) {
             pairs[keyValue[0]] = '';
-        else
+        } else {
             pairs[keyValue[0]] = decodeURIComponent(keyValue[1].replace(/\+/g, ' '));
+        }
     }
     return pairs;
 })(window.location.search.substr(1).split('&'));
@@ -184,7 +185,6 @@ var loadGist = function(gistId) {
 };
 
 var ghapi = window.GithubApi,
-    gistId = parseQueryString['id'],
     $titleHolder = document.querySelector('#titleHolder'),
     $contentHolder = document.querySelector('#content'),
     files = {
@@ -192,10 +192,36 @@ var ghapi = window.GithubApi,
         others: []
     };
 
-if (typeof gistId === 'undefined' || gistId === '') {
-    loadGist('7442b083383908d7c925981ff082fea7');
-    showFooter('intro');
-} else {
-    loadGist(gistId);
-    showFooter('post');
-}
+(function() {
+    var redirect = sessionStorage.redirect;
+    delete sessionStorage.redirect;
+
+    if (redirect && redirect !== location.href) {
+        // redirected from 404 page hack
+        history.replaceState(null, null, redirect);
+        // REMOVE THIS - just showing the redirect route in the UI
+        document.body.setAttribute('message', 'This page was redirected by 404.html, from the route: ' + redirect);
+
+        var gistId = redirect.split('/').pop();
+        console.log(gistId);
+
+        if (typeof gistId === 'undefined' || gistId === '') {
+            loadGist('7442b083383908d7c925981ff082fea7');
+            showFooter('intro');
+        } else {
+            loadGist(gistId);
+            showFooter('post');
+        }
+    } else {
+        // direct entry
+        var gistId = parseQueryString['id'];
+
+        if (typeof gistId === 'undefined' || gistId === '') {
+            loadGist('7442b083383908d7c925981ff082fea7');
+            showFooter('intro');
+        } else {
+            loadGist(gistId);
+            showFooter('post');
+        }
+    }
+})();
