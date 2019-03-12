@@ -63,10 +63,10 @@
 })(window);
 
 var externalLinks = function() {
-  for(var c = document.getElementsByTagName("a"), a = 0;a < c.length;a++) {
-    var b = c[a];
-    b.getAttribute("href") && b.hostname !== location.hostname && (b.target = "_blank")
-  }
+    for(var c = document.getElementsByTagName("a"), a = 0;a < c.length;a++) {
+        var b = c[a];
+        b.getAttribute("href") && b.hostname !== location.hostname && (b.target = "_blank")
+    }
 };
 
 var hideLoadingIndicator = function() {
@@ -89,6 +89,10 @@ var parseQueryString = (function(pairList) {
     }
     return pairs;
 })(window.location.search.substr(1).split('&'));
+
+var slugify = function(str) {
+    return encodeURIComponent(String(str).trim().toLowerCase().replace(/\s+/g, '-'))
+};
 
 // Since we can not access the iframe to get its scroll height (cross origin),
 // we calculate the height by counting the lines in the embedded gist.
@@ -137,6 +141,15 @@ var loadGist = function(gistId) {
                 if (files.markdown.length) {
                     var html = '';
                     var md = window.markdownit({linkify: true});
+                    md.use(window.markdownItAnchor, {
+                        level: 1,
+                        // slugify: string => string,
+                        permalink: true,
+                        // renderPermalink: (slug, opts, state, permalink) => {},
+                        permalinkClass: 'header-anchor',
+                        permalinkSymbol: '¶',
+                        permalinkBefore: true
+                    });
 
                     for (var i in files.markdown) {
                         html += md.render(files.markdown[i].content);

@@ -17,7 +17,8 @@ I liked the idea. Thus, _Nicegist_ was born.
 - 💥 Supports gist embedding (use `<gist>` tags, i.e. `<gist>file.sh</gist>`)
 - Supports public and secret gists
 - Supports CommonMark / GFM syntax
-- Automated code block syntax highlighting
+- Automatic code block syntax highlighting
+- Automatic headline anchors
 
 ## Usage
 
@@ -47,6 +48,7 @@ javascript:(function(){if(location.hostname==="gist.github.com"){var gistId=loca
 - [GitHub Gist API](https://developer.github.com/v3/gists/#get-a-single-gist) for fetching gists
 - [Chromium destilled webpage layout](https://chromium.googlesource.com/chromium/src/+/refs/heads/master/components/dom_distiller/) for optimized reading experience
 - [markdown-it](https://github.com/markdown-it/markdown-it) for Markdown parsing
+- [markdown-it-anchor](https://github.com/valeriangalliat/markdown-it-anchor) for automated header anchors
 - [highlight.js](https://highlightjs.org/) for code block syntax highlighting
 - Some regex sugar and a hidden gist feature for gist embedding
 - [GitHub Pages SPA hack](http://www.backalleycoder.com/2016/05/13/sghpa-the-single-page-app-hack-for-github-pages/) for pretty URLs
