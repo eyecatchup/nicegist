@@ -96,13 +96,13 @@ var getIframeHeight = function(filename) {
     for (var n in files.others) {
         if (files.others[n].filename === filename) {
             var matches = files.others[n].content.match(/\n/g);
-            if (matches && matches.length) {
-                // 22px = line height in embedded gists (with .pibb extension)
-                // 40px = embedded gists footer height
-                // 3px = cumulated border height for embedded gists
-                // 8px = body margin for embedded gists
-                return ((matches.length + 1) * 22) + 40 + 3 + 8;
-            }
+            var lines = ((matches && matches.length) ? matches.length : 0) + 1;
+
+            // 22px = line height in embedded gists (with .pibb extension)
+            // 40px = embedded gists footer height
+            // 3px = cumulated border height for embedded gists
+            // 8px = body margin for embedded gists
+            return (lines * 22) + 40 + 3 + 8;
         }
     }
     return false;
