@@ -2,7 +2,6 @@
     var GithubApi = {
         xhr: null,
         apiBaseUrl: 'https://api.github.com',
-        apiAccessToken: '89B467EB-2176-4978-9DE9-2F83439039FE',
         getXMLHttpRequest: function () {
             if (!!window.XMLHttpRequest) {
                 this.xhr = new window.XMLHttpRequest;
@@ -27,7 +26,6 @@
 
             this.xhr.open('GET', requestUrl, true);
             this.xhr.setRequestHeader('Accept', 'application/json');
-            //this.xhr.setRequestHeader('Authorization', this.apiAccessToken);
 
             self.onload = function() {
                 if (self.status >= 200 && self.status < 400) {
@@ -55,10 +53,6 @@
 
             this.xhr.send();
         },
-        getGists: function(user, pageId, success, failure) {
-            var url = '/users/' + user + '/gists?page=' + pageId;
-            this.get(url, success, failure);
-        },
         getGist: function(gistId, success, failure) {
             var url = '/gists/' + gistId;
             this.get(url, success, failure);
@@ -84,48 +78,89 @@ var parseQueryString = (function (pairList) {
     return pairs;
 })(window.location.search.substr(1).split('&'));
 
+// Since we can not access the iframe to get its scroll height (cross origin),
+// we calculate the height by counting the lines in the embedded gist.
+// Ugly, but works reliable.
+var getIframeHeight = function(filename) {
+    for (var n in files.others) {
+        if (files.others[n].filename === filename) {
+            var matches = files.others[n].content.match(/\n/g);
+            if (matches && matches.length) {
+                // 22px = line height in embedded gists (with .pibb extension)
+                // 40px = embedded gists footer height
+                // 3px = cumulated border height for embedded gists
+                // 8px = body margin for embedded gists
+                return ((matches.length + 1) * 22) + 40 + 3 + 8;
+            }
+        }
+    }
+    return false;
+};
+
 var ghapi = window.GithubApi,
     gistId = parseQueryString['id'],
     $titleHolder = document.querySelector('#titleHolder'),
     $contentHolder = document.querySelector('#content'),
 	files = {
         markdown: [],
-        text: []
+        text: [],
+        others: []
     };
 
-var getGist = function(gistId) {
+var loadGist = function(gistId) {
     ghapi.getGist(gistId, function(gist) {
         if (gist) {
             console.dir(gist);
             hideLoadingIndicator();
 
             if (gist.id && gist.id.length) {
+                // use gist description as a document title / headline
                 if (gist.description.length) {
                     $titleHolder.textContent = gist.description;
+                    document.title = gist.description;
                 } else {
                     $titleHolder.textContent = 'Untitled document';
                 }
 
-                if (gist.comments > 0) {
-                    document.querySelector('#comments').innerHTML = '<a target="_blank" href="https://gist.github.com/' + gistId + '#comments">' + gist.comments + ' comments</a>';
-                }
-
+                // get all markdown files to be parsed
                 for (var n in gist.files) {
                     if (gist.files[n].language === 'Markdown') {
                         files.markdown.push(gist.files[n]);
+                    } else {
+                        files.others.push(gist.files[n]);
                     }
                 }
 
+                // parse markdown files
                 if (files.markdown.length) {
                     var html = '';
                     var md = window.markdownit();
 
                     for (var i in files.markdown) {
                         html += md.render(files.markdown[i].content);
-                        //html += marked(files.markdown[i].content);
                     }
+
+                    // do we need to embed other gists?
+                    var matches = html.match(/&lt;gist&gt;(.*?)&lt;\/gist&gt;/gi);
+                    if (matches && matches.length) {
+                        for (var x in matches) {
+                            var filename = matches[x].replace('&lt;gist&gt;', '').replace('&lt;/gist&gt;', '');
+                            var h = getIframeHeight(filename);
+                            if (h !== false) {
+                                html = html.replace(matches[x], '<iframe class="embedded-gist" style="height:' + h + 'px" src="https://gist.github.com/' + gistId + '.pibb?file=' + filename + '" scrolling="no"></iframe>');
+                            }
+                        }
+                    }
+
+                    // write gist content
                     $contentHolder.innerHTML = html;
 
+                    // add link to gist comment section, if we have comments
+                    if (gist.comments > 0) {
+                        document.querySelector('#comments').innerHTML = '<a target="_blank" href="https://gist.github.com/' + gistId + '#comments">' + gist.comments + ' comments</a>';
+                    }
+
+                    // add syntax highlighting to code blocks
                     var codeBlocks = document.querySelectorAll('pre');
                     for (var c in codeBlocks) {
                         try {
@@ -148,5 +183,5 @@ if (typeof gistId === 'undefined') {
     hideLoadingIndicator();
     $titleHolder.textContent = 'No/invalid gist id'
 } else {
-    getGist(gistId);
+    loadGist(gistId);
 }
