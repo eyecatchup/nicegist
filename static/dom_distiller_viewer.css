@@ -229,7 +229,7 @@ video::-webkit-media-controls-fullscreen-button {
     width: 100%;
 }
 
-article > #gistContent, #comments, footer {
+article > #gistContent, #gistComments, footer {
     margin: 24px 16px 24px 16px;
 }
 
@@ -375,7 +375,7 @@ footer p {
 .header-anchor,
 .header-anchor:hover,
 .header-anchor:visited  {
-    opacity: .3;
+    opacity: 0;
     color: #ccc !important;
     margin-left: -25px;
     width: 20px;
@@ -383,8 +383,13 @@ footer p {
     text-align: right;
 }
 
-.header-anchor:hover {
-    opacity: .5;
+h1:hover .header-anchor,
+h2:hover .header-anchor,
+h3:hover .header-anchor,
+h4:hover .header-anchor,
+h5:hover .header-anchor,
+h6:hover .header-anchor {
+    opacity: .6;
 }
 
 @media (max-device-width: 768px) {
