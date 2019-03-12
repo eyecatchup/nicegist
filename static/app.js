@@ -62,8 +62,19 @@
     window.GithubApi = GithubApi;
 })(window);
 
+var externalLinks = function() {
+  for(var c = document.getElementsByTagName("a"), a = 0;a < c.length;a++) {
+    var b = c[a];
+    b.getAttribute("href") && b.hostname !== location.hostname && (b.target = "_blank")
+  }
+};
+
 var hideLoadingIndicator = function() {
     document.querySelector('#loadingIndicator').style.display = 'none';
+};
+
+var showFooter = function(elemId) {
+    document.querySelector('#' + elemId).style.display = 'block';
 };
 
 var parseQueryString = (function (pairList) {
@@ -96,16 +107,6 @@ var getIframeHeight = function(filename) {
     }
     return false;
 };
-
-var ghapi = window.GithubApi,
-    gistId = parseQueryString['id'],
-    $titleHolder = document.querySelector('#titleHolder'),
-    $contentHolder = document.querySelector('#content'),
-	files = {
-        markdown: [],
-        text: [],
-        others: []
-    };
 
 var loadGist = function(gistId) {
     ghapi.getGist(gistId, function(gist) {
@@ -167,6 +168,9 @@ var loadGist = function(gistId) {
                             hljs.highlightBlock(codeBlocks[c]);
                         } catch(e) {}
                     }
+
+                    // open external links in new tab
+                    externalLinks();
                 } else {
                     $contentHolder.textContent = 'No markdown files attached to gist ' + gistId;
                 }
@@ -179,9 +183,19 @@ var loadGist = function(gistId) {
     });
 };
 
-if (typeof gistId === 'undefined') {
-    hideLoadingIndicator();
-    $titleHolder.textContent = 'No/invalid gist id'
+var ghapi = window.GithubApi,
+    gistId = parseQueryString['id'],
+    $titleHolder = document.querySelector('#titleHolder'),
+    $contentHolder = document.querySelector('#content'),
+    files = {
+        markdown: [],
+        others: []
+    };
+
+if (typeof gistId === 'undefined' || gistId === '') {
+    loadGist('7442b083383908d7c925981ff082fea7');
+    showFooter('intro');
 } else {
     loadGist(gistId);
+    showFooter('post');
 }
