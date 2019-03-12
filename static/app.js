@@ -187,7 +187,7 @@ var loadGist = function(gistId) {
 
                     // add link to gist comment section, if we have comments
                     if (gist.comments > 0) {
-                        document.querySelector('#comments').innerHTML = '<a target="_blank" href="https://gist.github.com/' + gistId + '#comments">' + gist.comments + ' comments</a>';
+                        document.querySelector('#gistComments').innerHTML = '<a target="_blank" href="https://gist.github.com/' + gistId + '#comments">' + gist.comments + ' comments</a>';
                     }
 
                     // add syntax highlighting to code blocks
