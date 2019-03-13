@@ -1,3 +1,5 @@
+> **NOTE:** Repo moved to https://github.com/nicegist/nicegist.github.io
+
 # _Nicegist_ - a permanent gist.io alternative
 
 > writing for hackers · zero setup · publish in seconds
